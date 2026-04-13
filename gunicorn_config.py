@@ -1,0 +1,13 @@
+# Gunicorn 配置文件
+bind = "0.0.0.0:%(PORT)s"
+workers = 4
+worker_class = "threading"
+worker_connections = 1000
+timeout = 30
+keepalive = 2
+max_requests = 1000
+max_requests_jitter = 50
+preload_app = False
+errorlog = "-"
+accesslog = "-"
+loglevel = "info"

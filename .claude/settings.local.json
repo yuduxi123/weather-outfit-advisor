@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python app.py)",
+      "Bash(python -c ':*)",
+      "Bash(python -c \"print\\('Hello, Flask!'\\)\")",
+      "Bash(pip list:*)",
+      "Bash(py:*)",
+      "Bash(where python:*)",
+      "Bash(powershell:*)",
+      "Bash(dir:*)"
+    ]
+  }
+}

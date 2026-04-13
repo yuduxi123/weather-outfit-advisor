@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>穿搭建议 - 智能天气穿搭助手</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #5568d3;
+        }
+
+        .error-box {
+            background: #fee;
+            border: 2px solid #fcc;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            color: #c33;
+        }
+
+        .error-box .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .weather-info {
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .temperature {
+            font-size: 48px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .weather-desc {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .detail-item {
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .advice-content {
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .advice-content .polished {
+            font-size: 16px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+        }
+
+        .advice-content .detail {
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        .advice-content .detail div {
+            margin: 8px 0;
+            padding: 8px;
+            background: #fafafa;
+            border-radius: 6px;
+        }
+
+        .chart-container {
+            grid-column: 1 / -1;
+        }
+
+        .chart-container img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .forecast-list {
+            list-style: none;
+        }
+
+        .forecast-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .forecast-item:last-child {
+            border-bottom: none;
+        }
+
+        .forecast-date {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .forecast-temp {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .forecast-desc {
+            color: #666;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .tag-hot { background: #ff6b6b; color: white; }
+        .tag-warm { background: #ffd93d; color: #333; }
+        .tag-cool { background: #6bcb77; color: white; }
+        .tag-cold { background: #4d96ff; color: white; }
+        .tag-freezing { background: #9b59b6; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌤️ 天气穿搭建议</h1>
+            {% if weather %}
+            <p style="color: #666; margin-top: 5px;">{{ weather.city }} · {{ weather.timestamp }}</p>
+            {% endif %}
+            <a href="/" class="back-btn">← 返回首页</a>
+        </div>
+
+        {% if error %}
+        <div class="error-box">
+            <div class="icon">⚠️</div>
+            <h2>出错了</h2>
+            <p style="margin-top: 15px; color: #666;">{{ error }}</p>
+            <a href="/" class="back-btn" style="margin-top: 20px;">重新查询</a>
+        </div>
+        {% else %}
+        <div class="content">
+            <!-- 天气信息卡片 -->
+            <div class="card">
+                <h2>🌡️ 当前天气</h2>
+                <div class="weather-info">
+                    <div class="weather-icon">
+                        {% if weather.main == 'Clear' %}☀️
+                        {% elif weather.main == 'Clouds' %}☁️
+                        {% elif weather.main == 'Rain' %}🌧️
+                        {% elif weather.main == 'Snow' %}❄️
+                        {% elif weather.main == 'Thunderstorm' %}⛈️
+                        {% else %}🌤️{% endif %}
+                    </div>
+                    <div class="temperature">{{ weather.temp }}°C</div>
+                    <div class="weather-desc">{{ weather.description }}</div>
+                    <div>
+                        <span class="tag tag-{{ advice.temperature_category|lower }}">
+                            {{ advice.temperature_category }}
+                        </span>
+                    </div>
+                </div>
+                <div class="weather-details">
+                    <div class="detail-item">
+                        <div class="detail-label">体感温度</div>
+                        <div class="detail-value">{{ weather.feels_like }}°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">湿度</div>
+                        <div class="detail-value">{{ weather.humidity }}%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">风速</div>
+                        <div class="detail-value">{{ weather.wind_speed }} m/s</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">气压</div>
+                        <div class="detail-value">{{ weather.pressure }} hPa</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 穿搭建议卡片 -->
+            <div class="card">
+                <h2>👔 穿搭建议</h2>
+                <div class="advice-content">
+                    <div class="polished">
+                        {{ advice.polished_advice|replace('\n\n', '<br><br>')|replace('\n', '<br>')|safe }}
+                    </div>
+                    <div class="detail">
+                        <div><strong>📦 基础穿搭：</strong>{{ advice.base_outfit }}</div>
+                        <div><strong>🌤️ 天气适配：</strong>{{ advice.weather_adaptation }}</div>
+                        <div><strong>🎒 推荐配件：</strong>{{ advice.accessories|join('、') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表卡片 -->
+            {% if forecast %}
+            <div class="card chart-container">
+                <h2>📊 未来{{ forecast|length }}天趋势</h2>
+                {% if charts and charts.temperature_chart and charts.weather_pie_chart %}
+                <div class="charts-grid">
+                    <div>
+                        <img src="{{ charts.temperature_chart }}" alt="温度趋势图">
+                    </div>
+                    <div>
+                        <img src="{{ charts.weather_pie_chart }}" alt="天气分布图">
+                    </div>
+                </div>
+                {% endif %}
+                <ul class="forecast-list">
+                    {% for day in forecast %}
+                    <li class="forecast-item">
+                        <span class="forecast-date">{{ day.date_display }}</span>
+                        <span class="forecast-temp">{{ day.temp }}°C</span>
+                        <span class="forecast-desc">{{ day.description }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% else %}
+            <div class="card chart-container">
+                <h2>📊 预报数据</h2>
+                <div style="text-align: center; padding: 40px; color: #666;">
+                    <p>暂时无法获取未来几天的天气预报数据</p>
+                    <p style="margin-top: 10px; font-size: 14px;">可能是网络问题或API限制，请稍后重试</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
