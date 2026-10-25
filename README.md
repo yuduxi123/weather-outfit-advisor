@@ -1,65 +1,41 @@
-# 智能天气穿搭助手
+# Weather Outfit Advisor · 天气穿搭助手
 
-一个基于 Flask 的 Web 应用，通过天气数据为用户提供智能穿搭建议。
+`Python` · `Flask` · `OpenWeather` · `Matplotlib`
 
-## 功能特点
-- 查询实时天气
-- 5天天气预报
-- 智能穿搭建议
-- 天气数据可视化图表
+查询城市天气与未来预报，并生成穿搭建议和图表。适合作为天气 API 接入与 Flask Web 开发的学习项目。
 
-## 部署到 Render
+[项目导航](https://github.com/yuduxi123) · [中文补充说明](README_CN.md) · [数据与依赖来源](ATTRIBUTION.md)
 
-### 1. 推送代码到 GitHub
+## 功能与结构
 
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/您的用户名/weather-outfit-advisor.git
-git push -u origin main
-```
+| 模块 | 作用 |
+|---|---|
+| `weather_api.py` | OpenWeather 当前天气和预报接入 |
+| `outfit_advisor.py` | 穿搭建议逻辑 |
+| `chart_generator.py` | 天气图表 |
+| `app.py` / `templates/` | Flask 服务与页面 |
 
-### 2. 在 Render 上部署
-
-1. 访问 [render.com](https://render.com/) 并登录
-2. 点击 "New +" → "Web Service"
-3. 选择您的 GitHub 仓库
-4. 填写配置信息：
-   - Name: `weather-outfit-advisor`
-   - Root Directory: `/`
-   - Runtime: `Python 3`
-   
-5. Build Command:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-6. Start Command:
-   ```bash
-   gunicorn app:app -b 0.0.0.0:$PORT
-   ```
-
-7. 环境变量：
-   ```bash
-   OPENWEATHER_API_KEY=your-openweather-api-key
-   SECRET_KEY=您的生产密钥
-   ```
-
-7. 点击 "Create Web Service"
-
-### 3. 部署成功后
-您的应用将在类似 `https://weather-outfit-advisor.onrender.com` 的地址访问
-
-## 开发环境运行
+## 本地运行
 
 ```bash
-# 安装依赖
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
-
-# 运行开发服务器
+cp .env.template .env
+# 在本地 .env 填写自己的 OPENWEATHER_API_KEY 和 SECRET_KEY
 python app.py
 ```
 
-访问 http://localhost:5000
+访问 `http://localhost:5000`。不要把真实 Key 写入 README、提交记录或截图。API可用性、额度和条款以 OpenWeather 为准。
+
+## Render 部署
+
+新建 Web Service，选择本仓库，构建命令使用 `pip install -r requirements.txt`，启动命令使用 `gunicorn app:app -b 0.0.0.0:$PORT`。在平台设置 `OPENWEATHER_API_KEY`、`SECRET_KEY`，不要上传 `.env`。
+
+## 当前边界
+
+天气和预报依赖外部服务；穿搭建议仅供参考。这里的部署步骤不代表当前存在已验证的在线演示。本次只整理文档，未重新部署或运行真实天气API测试。
+
+## 来源与许可
+
+天气数据来自 [OpenWeather](https://openweathermap.org/)。主要运行依赖见 [ATTRIBUTION.md](ATTRIBUTION.md) 与 `requirements.txt`。第三方服务和依赖分别适用其条款及许可证；不因本仓库展示而改变授权。
